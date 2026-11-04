@@ -1,0 +1,20 @@
+VERSÃO COM POP-UP BLACK NOVEMBER
+
+1. Extraia este ZIP.
+2. Envie TODO o conteúdo desta pasta para a raiz do repositório GitHub
+   (incluindo index.html, css/, images/, js/, media/ e .nojekyll).
+3. No GitHub, abra Settings > Pages.
+4. Escolha Deploy from a branch, branch main e pasta /(root). Salve.
+5. Aguarde o link do GitHub Pages e abra em uma aba nova.
+
+POP-UP:
+- Abre automaticamente quando o visitante entra pela primeira vez na aba/sessão.
+- O X fecha a janela.
+- O botão "Aproveitar Black November" fecha o pop-up e leva à seção de planos.
+- Ao fechar, não reaparece na mesma sessão/aba. Uma nova sessão pode exibi-lo novamente.
+
+OBSERVAÇÕES:
+- O pop-up usa a arte de Black November que estava dentro do arquivo de captura fornecido.
+- Os scripts de runtime/analytics do servidor original foram removidos para a página estática não depender da hospedagem original.
+- Os links de checkout e rotas internas devem ser revisados/configurados para o seu checkout real.
+- Esta cópia é uma versão estática reconstruída a partir dos arquivos enviados, não o código-fonte do sistema original.
