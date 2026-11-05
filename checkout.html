@@ -3,343 +3,611 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Checkout | Deveu Perdeu</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finalizar Pedido | Deveu Perdeu</title>
 <style>
+:root{
+  --orange:#ff6b00;
+  --dark:#121316;
+  --green:#16a34a;
+  --border:#e5e5e5;
+  --muted:#777;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#f5f4f2;color:#161616;font-family:Arial,Helvetica,sans-serif;font-size:13px}
-.top{height:54px;background:#101113;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
-.logo{font-size:17px;font-weight:900;letter-spacing:-1px}
-.safe{font-size:11px}
-.safe span{color:#28c46a}
-.notice{background:#ff7100;color:white;text-align:center;font-size:11px;font-weight:700;padding:11px}
-main{width:min(100% - 24px,410px);margin:15px auto 40px}
-.steps{display:flex;align-items:center;justify-content:center;gap:12px;font-size:10px;color:#555;margin-bottom:15px}
-.steps span{display:flex;align-items:center;gap:4px}
-.dot{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#151515;color:white;font-size:10px;font-weight:bold}
-.card{background:white;border:1px solid #e7e7e7;border-radius:13px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 7px #00000005}
-.cardhead{display:flex;align-items:center;gap:11px;padding:15px;cursor:pointer}
-.number{background:#141414;color:white;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;font-weight:800;flex:none}
-.number.done{background:#20c56b}
-.cardhead strong{display:block;font-size:13px}
-.cardhead small{display:block;color:#777;margin-top:4px;font-size:10px}
-.arrow{margin-left:auto;color:#ff7100;font-size:16px}
-.content{padding:0 13px 13px}
+body{
+  margin:0;
+  background:#f5f4f1;
+  color:var(--dark);
+  font-family:Inter,Arial,sans-serif;
+  font-size:13px;
+}
+header{
+  background:var(--dark);
+  color:white;
+  padding:14px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.6px;
+}
+.secure{font-size:11px;font-weight:700}
+.banner{
+  background:var(--orange);
+  color:white;
+  text-align:center;
+  padding:11px;
+  font-size:12px;
+  font-weight:700;
+}
+main{
+  max-width:440px;
+  margin:auto;
+  padding:16px 12px 35px;
+}
+.progress{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:15px;
+  color:#666;
+  font-size:11px;
+}
+.progress span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.progress b{
+  background:#161616;
+  color:white;
+  width:19px;
+  height:19px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:10px;
+}
+.progress i{
+  width:23px;
+  border-top:1px dashed #bbb;
+}
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px #00000008;
+}
+.heading{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  cursor:pointer;
+}
+.number{
+  background:#171717;
+  color:white;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  flex-shrink:0;
+}
+.number.done{background:#22c55e}
+.heading h2{
+  font-size:15px;
+  margin:0;
+  font-weight:800;
+}
+.heading p{
+  color:var(--muted);
+  font-size:11px;
+  margin:4px 0 0;
+}
+.chevron{
+  margin-left:auto;
+  color:var(--orange);
+  font-size:19px;
+}
+.content{margin-top:16px}
 .hidden{display:none!important}
-label{display:block;font-size:11px;font-weight:700;margin:11px 0 6px}
-input,select{width:100%;height:42px;border:1px solid #e4e4e4;border-radius:8px;padding:0 11px;background:#fff;color:#222;font:inherit;outline:none}
-input:focus,select:focus{border-color:#ff7100}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-button{font:inherit;cursor:pointer}
-.primary{width:100%;border:0;border-radius:8px;background:#ff7100;color:white;padding:15px;font-weight:800;margin-top:12px}
-.primary:hover{background:#ec6800}
-.primary:disabled{background:#b9b9b9;cursor:not-allowed}
-.ship{border:1px solid #e6e6e6;border-radius:9px;padding:12px;margin-top:7px;display:flex;align-items:center;gap:9px;cursor:pointer}
-.ship.selected{border-color:#ff7100;background:#fff7f1}
-.ship input{width:15px;height:15px;accent-color:#ff7100}
-.ship .info{flex:1}
-.ship strong{display:block;font-size:11px}
-.ship small{display:block;color:#777;margin-top:3px;font-size:10px}
-.green{color:#0ca44a;font-weight:700}
-.orange{color:#ff7100;font-weight:700}
-.pix{background:#eafbf2;border:1px solid #c8f3db;padding:13px;border-radius:9px;margin-bottom:12px}
-.pix strong{display:block}
-.pix small{display:block;color:#555;margin-top:4px}
-.summary{padding:14px}
-.summary h3{font-size:13px;margin:0 0 13px}
-.product{display:flex;gap:12px;align-items:center;border-bottom:1px solid #eee;padding-bottom:12px}
-.producticon{width:56px;height:56px;background:#fff1e7;border-radius:8px;display:grid;place-items:center;font-size:30px}
-.product strong{font-size:12px}
-.product .orange{display:block;font-size:17px;margin-top:5px}
-.line{display:flex;justify-content:space-between;gap:10px;margin-top:12px;font-size:11px}
-.line.total{border-top:1px solid #eee;padding-top:13px;font-size:16px;font-weight:800}
-.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
-.trust>div{background:white;border:1px solid #eee;border-radius:10px;text-align:center;padding:13px 5px;font-size:10px}
-.trust strong{display:block;margin:6px 0}
-.trust small{color:#777;font-size:9px}
-.footer{text-align:center;color:#888;font-size:10px;padding:28px 0}
-.error{color:#c92727;font-size:11px;margin-top:10px}
-.help{color:#777;font-size:11px;line-height:1.5}
-#pixResult{margin-top:15px;text-align:center}
-#pixResult img{max-width:210px;width:100%}
-#pixCode{height:85px;resize:none;width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-@media(max-width:420px){.top{padding:0 13px}.safe{font-size:9px}main{width:calc(100% - 18px)}}
+label{
+  display:block;
+  font-weight:700;
+  font-size:11px;
+  margin:12px 0 6px;
+}
+input,select{
+  width:100%;
+  height:42px;
+  padding:10px;
+  border:1px solid #dedede;
+  border-radius:8px;
+  background:white;
+  font:inherit;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:var(--orange);
+}
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.btn{
+  width:100%;
+  padding:15px;
+  background:var(--orange);
+  border:0;
+  border-radius:9px;
+  color:white;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:15px;
+}
+.btn:disabled{
+  background:#bbb;
+  cursor:not-allowed;
+}
+.shipping{
+  border:1px solid #ddd;
+  border-radius:9px;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:9px;
+  background:#fff9f4;
+}
+.shipping input{
+  width:16px;
+  height:16px;
+  accent-color:var(--orange);
+}
+.shipping div{flex:1}
+.shipping strong{display:block}
+.shipping small{
+  display:block;
+  margin-top:4px;
+  color:#777;
+}
+.green{color:var(--green);font-weight:800}
+.orange{color:var(--orange);font-weight:800}
+.pix-option{
+  background:#ebfff3;
+  border:1px solid #bde8ce;
+  padding:14px;
+  border-radius:9px;
+}
+.pix-option strong{font-size:13px}
+.pix-option p{
+  font-size:11px;
+  color:#555;
+  margin:6px 0 0;
+}
+.summary-title{
+  margin:0 0 14px;
+  font-size:14px;
+}
+.product{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding-bottom:14px;
+  border-bottom:1px solid #eee;
+}
+.product-image{
+  width:65px;
+  height:65px;
+  background:#fff0e4;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  font-size:31px;
+  flex-shrink:0;
+}
+.product-name{
+  font-size:12px;
+  font-weight:800;
+}
+.product-price{
+  color:var(--orange);
+  font-size:18px;
+  font-weight:900;
+  margin-top:6px;
+}
+.line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:13px;
+  font-size:12px;
+}
+.line.total{
+  border-top:1px solid #eee;
+  padding-top:14px;
+  font-size:17px;
+  font-weight:900;
+}
+.trust{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.trust div{
+  background:white;
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:13px 6px;
+  text-align:center;
+  font-size:10px;
+}
+.trust strong{
+  display:block;
+  margin:7px 0 4px;
+}
+.trust small{color:#888;font-size:9px}
+.note{
+  color:#777;
+  font-size:11px;
+  line-height:1.6;
+}
+footer{
+  text-align:center;
+  color:#999;
+  padding:25px;
+  font-size:10px;
+}
+@media(max-width:400px){
+  header{padding:13px 10px}
+  .logo{font-size:15px}
+  .secure{font-size:9px}
+}
 </style>
 </head>
 <body>
 
-<header class="top">
+<header>
   <div class="logo">DEVEU PERDEU</div>
-  <div class="safe"><span>🔒</span> Pagamento seguro</div>
+  <div class="secure">🔒 Pagamento 100% seguro</div>
 </header>
 
-<div class="notice">
-  ✓ Preencha as informações corretamente para envio do pedido.
+<div class="banner">
+  ✓ Preencha corretamente seus dados para receber o pedido
 </div>
 
 <main>
-  <div class="steps">
-    <span><b class="dot">1</b> Dados</span>
-    <span>····</span>
-    <span><b class="dot">2</b> Entrega</span>
-    <span>····</span>
-    <span><b class="dot">3</b> Pagamento</span>
+
+<div class="progress">
+  <span><b>1</b> Dados</span>
+  <i></i>
+  <span><b>2</b> Entrega</span>
+  <i></i>
+  <span><b>3</b> Pagamento</span>
+</div>
+
+<!-- ETAPA 1 -->
+<section class="card">
+  <div class="heading" onclick="openStep(1)">
+    <div class="number" id="number1">1</div>
+    <div>
+      <h2>Dados pessoais</h2>
+      <p>Precisamos apenas das informações essenciais.</p>
+    </div>
+    <div class="chevron">⌄</div>
   </div>
 
-  <section class="card" id="step1">
-    <div class="cardhead" onclick="openStep(1)">
-      <b class="number" id="n1">1</b>
-      <div>
-        <strong>Dados pessoais</strong>
-        <small>Precisamos apenas das informações essenciais.</small>
-      </div>
-      <span class="arrow">⌄</span>
-    </div>
-    <div class="content" id="body1">
-      <form id="personalForm">
-        <label>Nome completo</label>
-        <input id="name" required autocomplete="name" placeholder="Seu nome completo">
+  <div class="content" id="step1">
+    <form id="form1">
+      <label>Nome completo</label>
+      <input id="name" required autocomplete="name"
+        placeholder="Seu nome completo">
 
-        <div class="cols">
-          <div>
-            <label>E-mail</label>
-            <input id="email" type="email" required autocomplete="email" placeholder="seu@email.com">
-          </div>
-          <div>
-            <label>WhatsApp</label>
-            <input id="phone" type="tel" required placeholder="+55 (11) 99999-9999">
-          </div>
+      <div class="two">
+        <div>
+          <label>E-mail</label>
+          <input id="email" type="email" required
+            autocomplete="email" placeholder="seu@email.com">
         </div>
-
-        <label>CPF</label>
-        <input id="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
-
-        <button class="primary" type="submit">Continuar ›</button>
-      </form>
-    </div>
-  </section>
-
-  <section class="card" id="step2">
-    <div class="cardhead" onclick="openStep(2)">
-      <b class="number" id="n2">2</b>
-      <div>
-        <strong>Entrega</strong>
-        <small>Informe o endereço para envio.</small>
-      </div>
-      <span class="arrow">⌄</span>
-    </div>
-    <div class="content hidden" id="body2">
-      <form id="addressForm">
-        <label>CEP</label>
-        <input id="cep" required inputmode="numeric" maxlength="9" placeholder="00000-000">
-
-        <label>Rua / Endereço</label>
-        <input id="street" required placeholder="Rua, Avenida...">
-
-        <div class="cols">
-          <div>
-            <label>Número</label>
-            <input id="number" required placeholder="123">
-          </div>
-          <div>
-            <label>Complemento</label>
-            <input id="complement" placeholder="Apto, Bloco...">
-          </div>
+        <div>
+          <label>WhatsApp</label>
+          <input id="phone" type="tel" required
+            autocomplete="tel" placeholder="(11) 99999-9999">
         </div>
-
-        <div class="cols">
-          <div>
-            <label>Bairro</label>
-            <input id="district" required placeholder="Bairro">
-          </div>
-          <div>
-            <label>Cidade</label>
-            <input id="city" required placeholder="Cidade">
-          </div>
-        </div>
-
-        <label>Estado</label>
-        <select id="state" required>
-          <option value="">Selecione...</option>
-        </select>
-
-        <label>Escolha o frete:</label>
-        <div class="ship selected">
-          <input type="radio" name="shipping" checked>
-          <div class="info">
-            <strong>Frete Grátis</strong>
-            <small>Entrega padrão</small>
-          </div>
-          <span class="green">Grátis</span>
-        </div>
-
-        <button class="primary" type="submit">
-          Continuar para Pagamento ›
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <section class="card" id="step3">
-    <div class="cardhead" onclick="openStep(3)">
-      <b class="number" id="n3">3</b>
-      <div>
-        <strong>Pagamento</strong>
-        <small>Escolha a forma de pagamento.</small>
-      </div>
-      <span class="arrow">⌄</span>
-    </div>
-    <div class="content hidden" id="body3">
-      <div class="pix">
-        <strong>💠 PIX — Pagamento instantâneo</strong>
-        <small>O código Pix será gerado após finalizar o pedido.</small>
       </div>
 
-      <p class="help">
-        Confira o valor e os dados do pedido antes de continuar.
-      </p>
+      <label>CPF</label>
+      <input id="cpf" required inputmode="numeric"
+        maxlength="14" placeholder="000.000.000-00">
 
-      <button class="primary" id="payButton" disabled>
-        🔒 FINALIZAR PEDIDO
+      <button class="btn" type="submit">
+        CONTINUAR →
       </button>
+    </form>
+  </div>
+</section>
 
-      <p class="help">
-        Em configuração: a emissão de cobranças será habilitada
-        após a validação da integração SkalePayments.
+<!-- ETAPA 2 -->
+<section class="card">
+  <div class="heading" onclick="openStep(2)">
+    <div class="number" id="number2">2</div>
+    <div>
+      <h2>Entrega</h2>
+      <p>Informe o endereço para envio.</p>
+    </div>
+    <div class="chevron">⌄</div>
+  </div>
+
+  <div class="content hidden" id="step2">
+    <form id="form2">
+      <label>CEP</label>
+      <input id="cep" required inputmode="numeric"
+        maxlength="9" placeholder="00000-000">
+
+      <label>Rua / Avenida</label>
+      <input id="street" required
+        autocomplete="address-line1"
+        placeholder="Nome da rua">
+
+      <div class="two">
+        <div>
+          <label>Número</label>
+          <input id="number" required placeholder="123">
+        </div>
+        <div>
+          <label>Complemento</label>
+          <input id="complement" placeholder="Apto, bloco...">
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Bairro</label>
+          <input id="district" required>
+        </div>
+        <div>
+          <label>Cidade</label>
+          <input id="city" required>
+        </div>
+      </div>
+
+      <label>Estado</label>
+      <select id="state" required>
+        <option value="">Selecione o estado</option>
+      </select>
+
+      <label>Escolha o frete</label>
+      <div class="shipping">
+        <input type="radio" checked name="shipping">
+        <div>
+          <strong>Frete Grátis</strong>
+          <small>Entrega padrão para todo o Brasil</small>
+        </div>
+        <span class="green">GRÁTIS</span>
+      </div>
+
+      <button class="btn" type="submit">
+        CONTINUAR PARA PAGAMENTO →
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ETAPA 3 -->
+<section class="card">
+  <div class="heading" onclick="openStep(3)">
+    <div class="number" id="number3">3</div>
+    <div>
+      <h2>Pagamento</h2>
+      <p>Escolha a forma de pagamento.</p>
+    </div>
+    <div class="chevron">⌄</div>
+  </div>
+
+  <div class="content hidden" id="step3">
+    <div class="pix-option">
+      <strong>💠 PIX — Pagamento instantâneo</strong>
+      <p>
+        Após finalizar o pedido, você poderá
+        pagar com QR Code ou Pix Copia e Cola.
       </p>
-
-      <div id="pixResult" class="hidden">
-        <h3>Pagamento via Pix</h3>
-        <img id="qrImage" alt="QR Code Pix">
-        <p>Pix Copia e Cola</p>
-        <textarea id="pixCode" readonly></textarea>
-        <button class="primary" type="button" onclick="copyPix()">
-          Copiar código Pix
-        </button>
-        <p id="paymentStatus">Aguardando pagamento</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="card summary">
-    <h3>Resumo do pedido</h3>
-
-    <div class="product">
-      <div class="producticon">📦</div>
-      <div>
-        <strong id="productName">1x Caixa Surpresa Bronze</strong>
-        <span class="orange" id="productPrice">R$ 49,70</span>
-      </div>
-    </div>
-
-    <div class="line">
-      <span id="originalLabel">1 × R$ 49,70</span>
-      <span id="originalTotal">R$ 49,70</span>
-    </div>
-
-    <div class="line">
-      <span class="orange">Desconto promocional</span>
-      <span class="green" id="discount">R$ 0,00</span>
-    </div>
-
-    <div class="line">
-      <span>Subtotal</span>
-      <span id="subtotal">R$ 49,70</span>
-    </div>
-
-    <div class="line">
-      <span>Frete Grátis</span>
-      <span class="green">Grátis</span>
     </div>
 
     <div class="line total">
-      <span>Total</span>
-      <span class="orange" id="grandTotal">R$ 49,70</span>
+      <span>Total do pedido</span>
+      <span class="orange" id="paymentTotal"></span>
     </div>
-  </section>
 
-  <div class="trust">
-    <div>🔒<strong>Compra Segura</strong><small>Pagamento protegido</small></div>
-    <div>⚡<strong>Envio rápido</strong><small>Acompanhe seu pedido</small></div>
-    <div>🛡️<strong>Site oficial</strong><small>Atendimento ao cliente</small></div>
+    <button class="btn" id="payButton" disabled>
+      🔒 FINALIZAR PEDIDO
+    </button>
+
+    <p class="note">
+      A geração do Pix será ativada após a
+      configuração e validação da SkalePayments.
+      Nenhuma cobrança será feita nesta versão.
+    </p>
+  </div>
+</section>
+
+<!-- RESUMO -->
+<section class="card">
+  <h3 class="summary-title">Resumo do pedido</h3>
+
+  <div class="product">
+    <div class="product-image">📦</div>
+    <div>
+      <div class="product-name" id="productName"></div>
+      <div class="product-price" id="productPrice"></div>
+    </div>
   </div>
 
-  <div class="footer">Deveu Perdeu © Todos os direitos reservados.</div>
+  <div class="line">
+    <span id="quantityLabel"></span>
+    <span id="originalPrice"></span>
+  </div>
+
+  <div class="line">
+    <span class="orange">Desconto promocional</span>
+    <span class="green" id="discount"></span>
+  </div>
+
+  <div class="line">
+    <span>Subtotal</span>
+    <span id="subtotal"></span>
+  </div>
+
+  <div class="line">
+    <span>Frete</span>
+    <span class="green">GRÁTIS</span>
+  </div>
+
+  <div class="line total">
+    <span>Total</span>
+    <span class="orange" id="grandTotal"></span>
+  </div>
+</section>
+
+<div class="trust">
+  <div>
+    🔒
+    <strong>Compra Segura</strong>
+    <small>Pagamento protegido</small>
+  </div>
+  <div>
+    🚚
+    <strong>Envio rápido</strong>
+    <small>Acompanhe seu pedido</small>
+  </div>
+  <div>
+    🛡️
+    <strong>Site oficial</strong>
+    <small>Atendimento ao cliente</small>
+  </div>
+</div>
+
+<footer>
+  © Deveu Perdeu — Todos os direitos reservados.
+</footer>
+
 </main>
 
 <script>
+/* NOVE COMBINAÇÕES DE PREÇOS, EM CENTAVOS */
 const catalog = {
-  bronze: { name:"Bronze", prices:[4970,6461,8201] },
-  prata:  { name:"Prata",  prices:[7990,10387,13184] },
-  ouro:   { name:"Ouro",   prices:[9990,12987,16484] }
+  bronze: {
+    name: "Bronze",
+    prices: {1:4970,2:6461,3:8201}
+  },
+  prata: {
+    name: "Prata",
+    prices: {1:7990,2:10387,3:13184}
+  },
+  ouro: {
+    name: "Ouro",
+    prices: {1:9990,2:12987,3:16484}
+  }
 };
 
+/* RECEBE O PLANO DA PÁGINA DE VENDAS */
 const params = new URLSearchParams(location.search);
-const requestedPlan = (params.get("plano") || "bronze").toLowerCase();
+
+const requestedPlan =
+  (params.get("plano") || "bronze").toLowerCase();
+
 const plan = Object.hasOwn(catalog,requestedPlan)
   ? requestedPlan : "bronze";
 
-const requestedQty = Number(params.get("qtd") || "1");
-const qty = [1,2,3].includes(requestedQty) ? requestedQty : 1;
-const item = catalog[plan];
-const cents = item.prices[qty-1];
-const unit = item.prices[0];
-const original = unit * qty;
-const discount = original - cents;
+const requestedQty = Number(params.get("qtd") || 1);
 
-function money(value){
-  return (value/100).toLocaleString("pt-BR",{
-    style:"currency",currency:"BRL"
+const qty = [1,2,3].includes(requestedQty)
+  ? requestedQty : 1;
+
+const selected = catalog[plan];
+const finalPrice = selected.prices[qty];
+const unitPrice = selected.prices[1];
+const originalPrice = unitPrice * qty;
+const discountValue = originalPrice - finalPrice;
+
+function money(cents){
+  return (cents/100).toLocaleString("pt-BR",{
+    style:"currency",
+    currency:"BRL"
   });
 }
-function setText(id,value){
+
+function text(id,value){
   document.getElementById(id).textContent=value;
 }
 
-setText("productName",`${qty}x Caixa Surpresa ${item.name}`);
-setText("productPrice",money(cents));
-setText("originalLabel",`${qty} × ${money(unit)}`);
-setText("originalTotal",money(original));
-setText("discount","- "+money(discount));
-setText("subtotal",money(cents));
-setText("grandTotal",money(cents));
+/* ATUALIZA O RESUMO AUTOMATICAMENTE */
+text("productName",
+  qty+"x Caixa Surpresa "+selected.name);
 
+text("productPrice",money(finalPrice));
+text("quantityLabel",qty+" × "+money(unitPrice));
+text("originalPrice",money(originalPrice));
+text("discount","- "+money(discountValue));
+text("subtotal",money(finalPrice));
+text("grandTotal",money(finalPrice));
+text("paymentTotal",money(finalPrice));
+
+/* ESTADOS BRASILEIROS */
 const states = [
 "AC","AL","AP","AM","BA","CE","DF","ES","GO",
 "MA","MT","MS","MG","PA","PB","PR","PE","PI",
 "RJ","RN","RS","RO","RR","SC","SP","SE","TO"
 ];
-const stateSelect=document.getElementById("state");
+
 states.forEach(uf=>{
   const option=document.createElement("option");
   option.value=uf;
   option.textContent=uf;
-  stateSelect.appendChild(option);
+  document.getElementById("state").appendChild(option);
 });
 
+/* CONTROLE DAS ETAPAS */
 let completed=0;
+
 function openStep(step){
   if(step>completed+1)return;
+
   for(let i=1;i<=3;i++){
-    document.getElementById("body"+i)
+    document.getElementById("step"+i)
       .classList.toggle("hidden",i!==step);
   }
 }
 
-function markDone(step){
+function finishStep(step){
   completed=Math.max(completed,step);
-  const number=document.getElementById("n"+step);
-  number.textContent="✓";
-  number.classList.add("done");
-  openStep(step+1);
+
+  const circle=document.getElementById("number"+step);
+  circle.textContent="✓";
+  circle.classList.add("done");
+
+  if(step<3)openStep(step+1);
 }
 
 function digits(value){
   return String(value).replace(/\D/g,"");
 }
+
 function validCPF(value){
   const cpf=digits(value);
-  if(!/^\d{11}$/.test(cpf)||/^(\d)\1+$/.test(cpf))return false;
+
+  if(!/^\d{11}$/.test(cpf) ||
+     /^(\d)\1+$/.test(cpf))return false;
+
   for(let length=9;length<=10;length++){
     let sum=0;
     for(let i=0;i<length;i++){
@@ -352,47 +620,63 @@ function validCPF(value){
   return true;
 }
 
-document.getElementById("personalForm")
-  .addEventListener("submit",event=>{
+/* VALIDAÇÃO DOS DADOS */
+document.getElementById("form1")
+  .addEventListener("submit",function(event){
     event.preventDefault();
-    const form=event.currentTarget;
-    if(!form.reportValidity())return;
+
+    if(!this.reportValidity())return;
+
     if(!validCPF(document.getElementById("cpf").value)){
-      alert("Confira o CPF informado.");
+      alert("Informe um CPF válido.");
       return;
     }
-    if(digits(document.getElementById("phone").value).length<10){
-      alert("Informe um WhatsApp válido com DDD.");
+
+    const phone=digits(
+      document.getElementById("phone").value
+    );
+
+    if(phone.length<10 || phone.length>13){
+      alert("Informe um WhatsApp válido.");
       return;
     }
-    markDone(1);
+
+    finishStep(1);
   });
 
-document.getElementById("addressForm")
-  .addEventListener("submit",event=>{
+/* VALIDAÇÃO DA ENTREGA */
+document.getElementById("form2")
+  .addEventListener("submit",function(event){
     event.preventDefault();
-    const form=event.currentTarget;
-    if(!form.reportValidity())return;
-    if(digits(document.getElementById("cep").value).length!==8){
-      alert("Informe um CEP válido com 8 dígitos.");
+
+    if(!this.reportValidity())return;
+
+    const cep=digits(
+      document.getElementById("cep").value
+    );
+
+    if(cep.length!==8){
+      alert("Informe um CEP válido.");
       return;
     }
-    markDone(2);
+
+    finishStep(2);
   });
 
-async function copyPix(){
-  const code=document.getElementById("pixCode").value;
-  if(!code)return;
-  try{
-    await navigator.clipboard.writeText(code);
-    alert("Código Pix copiado.");
-  }catch{
-    alert("Selecione e copie o código Pix.");
-  }
-}
+/*
+INTEGRAÇÃO PIX PENDENTE:
 
-// A cobrança real será conectada aqui somente após
-// validar a API, o valor no servidor e a confirmação Pix.
+O servidor deverá:
+1. Receber plano e quantidade.
+2. Validar os dados do cliente.
+3. Recalcular o preço com o catálogo do servidor.
+4. Criar a cobrança pela SkalePayments.
+5. Retornar QR Code e Pix Copia e Cola.
+6. Verificar a confirmação do pagamento.
+
+Não colocar a chave secreta no HTML.
+*/
 </script>
+
 </body>
 </html>
