@@ -648,6 +648,71 @@ Dentro do `<style>`, antes de `</style>`, cole:
     <span class="green">GRÁTIS</span>
   </div>
 
+<div class="line">
+  <span>Adicional selecionado</span>
+  <span id="upgradeAmount">R$ 0,00</span>
+</div>
+```
+
+Depois, no final do JavaScript, imediatamente antes de `</script>`, cole:
+
+<CodeBlock language="javascript" editable>
+const shippingPrices = {
+  gratis: 0,
+  jadlog: 990,
+  retirada: 0,
+  full: 1990
+};
+
+const upgradePrices = {
+  nenhum: 0,
+  premium: 1990,
+  dobro: 2590,
+  iphone: 7900
+};
+
+function updateOrderTotal() {
+  const shipping =
+    document.querySelector('input[name="shipping"]:checked')
+      ?.value || "gratis";
+
+  const upgrade =
+    document.querySelector('input[name="upgrade"]:checked')
+      ?.value || "nenhum";
+
+  const shippingAmount = shippingPrices[shipping] ?? 0;
+  const upgradeAmount = upgradePrices[upgrade] ?? 0;
+
+  const totalAmount =
+    finalPrice + shippingAmount + upgradeAmount;
+
+  const shippingLabel =
+    document.querySelector("#grandTotal")
+      .closest(".card")
+      .querySelectorAll(".line");
+
+  for (const line of shippingLabel) {
+    const title = line.querySelector("span");
+    if (title && title.textContent.trim() === "Frete") {
+      const value = line.querySelector("span:last-child");
+      value.textContent =
+        shippingAmount === 0 ? "GRÁTIS" : money(shippingAmount);
+    }
+  }
+
+  text("upgradeAmount", money(upgradeAmount));
+  text("grandTotal", money(totalAmount));
+  text("paymentTotal", money(totalAmount));
+}
+
+document.querySelectorAll(
+  'input[name="shipping"], input[name="upgrade"]'
+).forEach(input => {
+  input.addEventListener("change", updateOrderTotal);
+});
+
+updateOrderTotal();
+
   <div class="line total">
     <span>Total</span>
     <span class="orange" id="grandTotal"></span>
