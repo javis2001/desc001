@@ -411,7 +411,7 @@ footer{
 <section class="card">
   <div class="heading" onclick="openStep(3)"><div class="number" id="number3">3</div><div><h2>Pagamento</h2><p>Escolha a forma de pagamento.</p></div><div class="chevron">⌄</div></div>
   <div class="content hidden" id="step3">
-    <div class="pix-option"><strong>💠 PIX — Aprovação imediata</strong><p>Pague com Pix e receba as instruções após a confirmação.</p></div>
+    <div id="paymentSetup"><div class="pix-option"><strong>💠 PIX — Aprovação imediata</strong><p>Pague com Pix e receba as instruções após a confirmação.</p></div>
     <div class="upgrade-box">
       <strong class="upgrade-title">🔥 APROVEITE! ADICIONE UM UPGRADE AO SEU PEDIDO:</strong>
       <label class="upgrade-option"><input type="radio" name="upgrade" value="premium"><div><strong>Upgrade Premium</strong><small>Produtos premium garantidos na caixa</small></div><span class="orange">+ R$ 19,90</span></label>
@@ -421,13 +421,16 @@ footer{
     </div>
     <div class="line total"><span>Total do pedido</span><span class="orange" id="paymentTotal"></span></div>
     <button class="btn" id="payButton" type="button">🔒 FINALIZAR PEDIDO</button>
+    </div>
     <p class="note" id="pixMessage" role="status">Ao finalizar, o Pix será gerado com o valor exibido no resumo.</p>
     <div id="pixResult" hidden style="margin-top:12px;padding:14px;border:1px solid #ddd;border-radius:10px;background:#fff;text-align:center">
-      <strong id="pixStatus">Aguardando pagamento</strong><p id="pixValue" style="margin:8px 0"></p>
+      <p id="pixValue" style="font-size:16px;font-weight:800;margin:8px 0"></p>
       <img id="pixQrImage" alt="QR Code Pix" style="width:220px;max-width:100%;display:block;margin:12px auto" hidden>
+      <div id="pixQrGenerated" style="display:flex;justify-content:center;margin:12px auto"></div>
       <textarea id="pixCode" readonly rows="3" aria-label="Pix Copia e Cola" style="width:100%;font-size:12px;resize:none"></textarea>
       <button id="copyPix" class="btn" type="button">COPIAR CÓDIGO PIX</button>
-      <small>Confirmação do pagamento verificada pela SkalePayments.</small>
+      <p class="note" id="pixStatus" role="status">Aguardando pagamento Pix...</p>
+      <small>O status é consultado junto à SkalePayments.</small>
     </div>
   </div>
 </section>
@@ -492,6 +495,7 @@ footer{
 
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 /* NOVE COMBINAÇÕES DE PREÇOS, EM CENTAVOS */
 const catalog = {
@@ -702,7 +706,7 @@ const pixCode = document.getElementById('pixCode');
 const pixQrImage = document.getElementById('pixQrImage');
 const pixValue = document.getElementById('pixValue');
 const pick = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
-const addressIds = ['cep','street','number','complement','neighborhood','city','state'];
+const addressIds = ['cep','street','number','complement','district','city','state'];
 function readAddress(){
   const result = {};
   for (const id of addressIds) result[id] = document.getElementById(id)?.value?.trim() || '';
@@ -761,11 +765,19 @@ payButton.addEventListener('click', async () => {
     }
     activeTransaction = data.id;
     pixResult.hidden = false;
+    document.getElementById('paymentSetup').classList.add('hidden');
     pixCode.value = data.pix.qrcode;
     pixValue.textContent = 'Valor: ' + money(data.amount);
     if (data.pix.qrcodeImage) {
       pixQrImage.src = data.pix.qrcodeImage;
       pixQrImage.hidden = false;
+    } else if (typeof QRCode !== 'undefined') {
+      new QRCode(document.getElementById('pixQrGenerated'), {
+        text: data.pix.qrcode, width: 220, height: 220,
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } else {
+      pixStatus.textContent = 'QR Code indisponível; utilize o código Pix Copia e Cola.';
     }
     pixStatus.textContent = 'Aguardando pagamento Pix';
     pixMessage.textContent = 'Pix gerado. Escaneie o QR Code ou copie o código.';
