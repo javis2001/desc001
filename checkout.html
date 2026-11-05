@@ -273,6 +273,19 @@ footer{
   .logo{font-size:15px}
   .secure{font-size:9px}
 }
+
+/* Seletores do checkout original: frete somente em Entrega e upgrade somente em Pagamento */
+.shipping,.upgrade-option{cursor:pointer;transition:background .2s,border-color .2s}
+.shipping{margin:7px 0;background:white;font-weight:normal}
+.shipping:has(input:checked),.upgrade-option:has(input:checked){border-color:#ff6b00;background:#fff5ed}
+.shipping input,.upgrade-option input{flex-shrink:0;width:16px;height:16px;accent-color:#ff6b00;padding:0}
+.shipping strong,.upgrade-option strong{font-size:11px}
+.shipping small,.upgrade-option small{display:block;font-size:10px;color:#777;margin-top:4px}
+.shipping>strong,.shipping>span,.upgrade-option>span{white-space:nowrap;font-size:10px}
+.upgrade-box{border:1px dashed #ff8a39;border-radius:10px;padding:10px;margin-top:12px;background:#fffaf6}
+.upgrade-title{display:block;font-size:10px;color:#ff6b00;margin-bottom:10px}
+.upgrade-option{display:flex;align-items:center;gap:9px;border:1px solid #e8e8e8;border-radius:9px;padding:12px 8px;margin:7px 0;background:white;font-weight:normal}
+.upgrade-option div{flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -388,231 +401,30 @@ footer{
 
      
 <label>Escolha o frete:</label>
-
 <div id="shippingOptions">
-  <label class="shipping">
-    <input type="radio" name="shipping"
-           value="gratis" checked>
-    <div>
-      <strong>🎁 Frete Grátis</strong>
-      <small>4 a 7 dias úteis</small>
-    </div>
-    <span class="green">Grátis</span>
-  </label>
-
-  <label class="shipping">
-    <input type="radio" name="shipping"
-           value="jadlog">
-    <div>
-      <strong>🚚 JadLog</strong>
-      <small>3 a 5 dias úteis</small>
-    </div>
-    <strong>R$ 9,90</strong>
-  </label>
-
-  <label class="shipping">
-    <input type="radio" name="shipping"
-           value="retirada">
-    <div>
-      <strong>📍 Retirada no Shopping Iguatemi</strong>
-      <small>Retire no mesmo dia, mediante confirmação</small>
-    </div>
-    <span class="green">Grátis</span>
-  </label>
-
-  <label class="shipping">
-    <input type="radio" name="shipping"
-           value="full">
-    <div>
-      <strong>⚡ Full 24hrs</strong>
-      <small>Entrega em até 24 horas</small>
-    </div>
-    <strong>R$ 19,90</strong>
-  </label>
+  <label class="shipping"><input type="radio" name="shipping" value="gratis" checked><div><strong>🎁 Frete Grátis</strong><small>4 a 7 dias úteis</small></div><span class="green">Grátis</span></label>
+  <label class="shipping"><input type="radio" name="shipping" value="jadlog"><div><strong>🚚 JadLog</strong><small>3 a 5 dias úteis</small></div><strong>R$ 9,90</strong></label>
+  <label class="shipping"><input type="radio" name="shipping" value="retirada"><div><strong>📍 Retirada no Shopping Iguatemi</strong><small>Retirada mediante confirmação</small></div><span class="green">Grátis</span></label>
+  <label class="shipping"><input type="radio" name="shipping" value="full"><div><strong>⚡ Full 24hrs</strong><small>Entrega em até 24 horas</small></div><strong>R$ 19,90</strong></label>
 </div>
-```
+<button class="btn" type="submit">CONTINUAR PARA PAGAMENTO →</button>
+</form></div></section>
 
-As quatro opções terão o mesmo estilo de seleção do checkout original. **Os prazos e a retirada são os da referência; só mantenha essas modalidades ativas se você realmente conseguir oferecê-las ao cliente.**
-
-## 2. Adicionar os upgrades no pagamento
-
-Na etapa 3, localize o fechamento da caixa verde do Pix:
-
-```html
-</div>
-```
-
-Imediatamente depois da `<div class="pix-option">`, cole:
-
-<CodeBlock language="html" editable>
-<div class="upgrade-box">
-  <strong class="upgrade-title">
-    🔥 APROVEITE! ADICIONE UM UPGRADE AO SEU PEDIDO:
-  </strong>
-
-  <label class="upgrade-option">
-    <input type="radio" name="upgrade" value="premium">
-    <div>
-      <strong>Upgrade Premium</strong>
-      <small>Produtos premium garantidos na caixa</small>
-    </div>
-    <span class="orange">+ R$ 19,90</span>
-  </label>
-
-  <label class="upgrade-option">
-    <input type="radio" name="upgrade" value="dobro">
-    <div>
-      <strong>Caixa em Dobro</strong>
-      <small>Receba o dobro de produtos na caixa</small>
-    </div>
-    <span class="orange">+ R$ 25,90</span>
-  </label>
-
-  <label class="upgrade-option">
-    <input type="radio" name="upgrade" value="iphone">
-    <div>
-      <strong>Um iPhone Garantido</strong>
-      <small>Adicional sujeito à oferta anunciada</small>
-    </div>
-    <span class="orange">+ R$ 79,00</span>
-  </label>
-
-  <label class="upgrade-option">
-    <input type="radio" name="upgrade" value="nenhum" checked>
-    <div>
-      <strong>Não quero nenhum upgrade</strong>
-    </div>
-  </label>
-</div>
-```
-
-O cliente poderá escolher apenas um upgrade por pedido. Nenhum adicional será selecionado automaticamente.
-
-## 3. Adicionar o estilo das novas opções
-
-Dentro do `<style>`, antes de `</style>`, cole:
-
-<CodeBlock language="css" editable>
-.shipping,
-.upgrade-option {
-  cursor: pointer;
-  transition: border-color .2s, background .2s;
-}
-
-.shipping:has(input:checked),
-.upgrade-option:has(input:checked) {
-  border-color: #ff6b00;
-  background: #fff5ed;
-}
-
-.shipping input,
-.upgrade-option input {
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.upgrade-box {
-  border: 1px dashed #ff8a39;
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 12px;
-  background: #fffaf6;
-}
-
-.upgrade-title {
-  display: block;
-  font-size: 10px;
-  color: #ff6b00;
-  margin-bottom: 10px;
-}
-
-.upgrade-option {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  border: 1px solid #e8e8e8;
-  border-radius: 9px;
-  padding: 12px 8px;
-  margin: 7px 0;
-  background: white;
-}
-
-.upgrade-option input {
-  width: 16px;
-  height: 16px;
-  accent-color: #ff6b00;
-}
-
-.upgrade-option div {
-  flex: 1;
-  min-width: 0;
-}
-
-.upgrade-option strong {
-  font-size: 11px;
-}
-
-.upgrade-option small {
-  display: block;
-  color: #777;
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-.upgrade-option .orange {
-  white-space: nowrap;
-  font-size: 10px;
-}
-
-        <input type="radio" checked name="shipping">
-        <div>
-          <strong>Frete Grátis</strong>
-          <small>Entrega padrão para todo o Brasil</small>
-        </div>
-        <span class="green">GRÁTIS</span>
-      </div>
-
-      <button class="btn" type="submit">
-        CONTINUAR PARA PAGAMENTO →
-      </button>
-    </form>
-  </div>
-</section>
-
-<!-- ETAPA 3 -->
+<!-- ETAPA 3: PAGAMENTO -->
 <section class="card">
-  <div class="heading" onclick="openStep(3)">
-    <div class="number" id="number3">3</div>
-    <div>
-      <h2>Pagamento</h2>
-      <p>Escolha a forma de pagamento.</p>
-    </div>
-    <div class="chevron">⌄</div>
-  </div>
-
+  <div class="heading" onclick="openStep(3)"><div class="number" id="number3">3</div><div><h2>Pagamento</h2><p>Escolha a forma de pagamento.</p></div><div class="chevron">⌄</div></div>
   <div class="content hidden" id="step3">
-    <div class="pix-option">
-      <strong>💠 PIX — Pagamento instantâneo</strong>
-      <p>
-        Após finalizar o pedido, você poderá
-        pagar com QR Code ou Pix Copia e Cola.
-      </p>
+    <div class="pix-option"><strong>💠 PIX — Aprovação imediata</strong><p>Pague com Pix e receba as instruções após a confirmação.</p></div>
+    <div class="upgrade-box">
+      <strong class="upgrade-title">🔥 APROVEITE! ADICIONE UM UPGRADE AO SEU PEDIDO:</strong>
+      <label class="upgrade-option"><input type="radio" name="upgrade" value="premium"><div><strong>Upgrade Premium</strong><small>Produtos premium garantidos na caixa</small></div><span class="orange">+ R$ 19,90</span></label>
+      <label class="upgrade-option"><input type="radio" name="upgrade" value="dobro"><div><strong>Caixa em Dobro</strong><small>Receba o dobro de produtos na caixa</small></div><span class="orange">+ R$ 25,90</span></label>
+      <label class="upgrade-option"><input type="radio" name="upgrade" value="iphone"><div><strong>Um iPhone Garantido</strong><small>Adicional conforme condições da oferta</small></div><span class="orange">+ R$ 79,00</span></label>
+      <label class="upgrade-option"><input type="radio" name="upgrade" value="nenhum" checked><div><strong>Não quero nenhum upgrade</strong></div></label>
     </div>
-
-    <div class="line total">
-      <span>Total do pedido</span>
-      <span class="orange" id="paymentTotal"></span>
-    </div>
-
-    <button class="btn" id="payButton" disabled>
-      🔒 FINALIZAR PEDIDO
-    </button>
-
-    <p class="note">
-      A geração do Pix será ativada após a
-      configuração e validação da SkalePayments.
-      Nenhuma cobrança será feita nesta versão.
-    </p>
+    <div class="line total"><span>Total do pedido</span><span class="orange" id="paymentTotal"></span></div>
+    <button class="btn" id="payButton" type="button" disabled>🔒 FINALIZAR PEDIDO</button>
+    <p class="note">Pagamento Pix indisponível nesta versão até validar a integração segura com a SkalePayments.</p>
   </div>
 </section>
 
@@ -645,78 +457,11 @@ Dentro do `<style>`, antes de `</style>`, cole:
 
   <div class="line">
     <span>Frete</span>
-    <span class="green">GRÁTIS</span>
+    <span class="green" id="shippingAmount">GRÁTIS</span>
   </div>
 
-<div class="line">
-  <span>Adicional selecionado</span>
-  <span id="upgradeAmount">R$ 0,00</span>
-</div>
-```
-
-Depois, no final do JavaScript, imediatamente antes de `</script>`, cole:
-
-<CodeBlock language="javascript" editable>
-const shippingPrices = {
-  gratis: 0,
-  jadlog: 990,
-  retirada: 0,
-  full: 1990
-};
-
-const upgradePrices = {
-  nenhum: 0,
-  premium: 1990,
-  dobro: 2590,
-  iphone: 7900
-};
-
-function updateOrderTotal() {
-  const shipping =
-    document.querySelector('input[name="shipping"]:checked')
-      ?.value || "gratis";
-
-  const upgrade =
-    document.querySelector('input[name="upgrade"]:checked')
-      ?.value || "nenhum";
-
-  const shippingAmount = shippingPrices[shipping] ?? 0;
-  const upgradeAmount = upgradePrices[upgrade] ?? 0;
-
-  const totalAmount =
-    finalPrice + shippingAmount + upgradeAmount;
-
-  const shippingLabel =
-    document.querySelector("#grandTotal")
-      .closest(".card")
-      .querySelectorAll(".line");
-
-  for (const line of shippingLabel) {
-    const title = line.querySelector("span");
-    if (title && title.textContent.trim() === "Frete") {
-      const value = line.querySelector("span:last-child");
-      value.textContent =
-        shippingAmount === 0 ? "GRÁTIS" : money(shippingAmount);
-    }
-  }
-
-  text("upgradeAmount", money(upgradeAmount));
-  text("grandTotal", money(totalAmount));
-  text("paymentTotal", money(totalAmount));
-}
-
-document.querySelectorAll(
-  'input[name="shipping"], input[name="upgrade"]'
-).forEach(input => {
-  input.addEventListener("change", updateOrderTotal);
-});
-
-updateOrderTotal();
-
-  <div class="line total">
-    <span>Total</span>
-    <span class="orange" id="grandTotal"></span>
-  </div>
+<div class="line"><span>Adicional selecionado</span><span id="upgradeAmount">R$ 0,00</span></div>
+<div class="line total"><span>Total</span><span class="orange" id="grandTotal"></span></div>
 </section>
 
 <div class="trust">
@@ -924,6 +669,23 @@ Não colocar a chave secreta no HTML.
 };
 
 document.getElementById("boxImage").src = boxImages[plan];
+
+/* Frete e upgrades: preços em centavos. Validação no servidor necessária para cobrança real. */
+const shippingPrices={gratis:0,jadlog:990,retirada:0,full:1990};
+const upgradePrices={nenhum:0,premium:1990,dobro:2590,iphone:7900};
+function updateOrderTotal(){
+ const shipping=document.querySelector('input[name="shipping"]:checked')?.value||'gratis';
+ const upgrade=document.querySelector('input[name="upgrade"]:checked')?.value||'nenhum';
+ const freight=shippingPrices[shipping]??0;
+ const extra=upgradePrices[upgrade]??0;
+ const total=finalPrice+freight+extra;
+ document.getElementById('shippingAmount').textContent=freight?money(freight):'GRÁTIS';
+ text('upgradeAmount',money(extra));
+ text('grandTotal',money(total));
+ text('paymentTotal',money(total));
+}
+document.querySelectorAll('input[name="shipping"],input[name="upgrade"]').forEach(el=>el.addEventListener('change',updateOrderTotal));
+updateOrderTotal();
 </script>
 
 </body>
