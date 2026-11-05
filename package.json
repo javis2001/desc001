@@ -1,10 +1,1 @@
-
-{
-  "name": "checkout-skalepay",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vercel dev"
-  }
-}
+{"name":"deveuperdeu-checkout","version":"1.0.0","private":true,"type":"module","dependencies":{"qrcode":"^1.5.4"}}

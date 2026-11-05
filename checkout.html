@@ -420,8 +420,15 @@ footer{
       <label class="upgrade-option"><input type="radio" name="upgrade" value="nenhum" checked><div><strong>Não quero nenhum upgrade</strong></div></label>
     </div>
     <div class="line total"><span>Total do pedido</span><span class="orange" id="paymentTotal"></span></div>
-    <button class="btn" id="payButton" type="button" disabled>🔒 FINALIZAR PEDIDO</button>
-    <p class="note">Pagamento Pix indisponível nesta versão até validar a integração segura com a SkalePayments.</p>
+    <button class="btn" id="payButton" type="button">🔒 FINALIZAR PEDIDO</button>
+    <p class="note" id="pixMessage" role="status">Ao finalizar, o Pix será gerado com o valor exibido no resumo.</p>
+    <div id="pixResult" hidden style="margin-top:12px;padding:14px;border:1px solid #ddd;border-radius:10px;background:#fff;text-align:center">
+      <strong id="pixStatus">Aguardando pagamento</strong><p id="pixValue" style="margin:8px 0"></p>
+      <img id="pixQrImage" alt="QR Code Pix" style="width:220px;max-width:100%;display:block;margin:12px auto" hidden>
+      <textarea id="pixCode" readonly rows="3" aria-label="Pix Copia e Cola" style="width:100%;font-size:12px;resize:none"></textarea>
+      <button id="copyPix" class="btn" type="button">COPIAR CÓDIGO PIX</button>
+      <small>Confirmação do pagamento verificada pela SkalePayments.</small>
+    </div>
   </div>
 </section>
 
@@ -683,6 +690,99 @@ function updateOrderTotal(){
 }
 document.querySelectorAll('input[name="shipping"],input[name="upgrade"]').forEach(el=>el.addEventListener('change',updateOrderTotal));
 updateOrderTotal();
+
+/* PIX: somente o servidor acessa a chave da SkalePayments. */
+let activeTransaction = null;
+let statusTimer = null;
+const payButton = document.getElementById('payButton');
+const pixMessage = document.getElementById('pixMessage');
+const pixResult = document.getElementById('pixResult');
+const pixStatus = document.getElementById('pixStatus');
+const pixCode = document.getElementById('pixCode');
+const pixQrImage = document.getElementById('pixQrImage');
+const pixValue = document.getElementById('pixValue');
+const pick = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+const addressIds = ['cep','street','number','complement','neighborhood','city','state'];
+function readAddress(){
+  const result = {};
+  for (const id of addressIds) result[id] = document.getElementById(id)?.value?.trim() || '';
+  return result;
+}
+async function checkPixStatus(){
+  if (!activeTransaction) return;
+  try {
+    const response = await fetch('/api/status?id=' + encodeURIComponent(activeTransaction), {cache:'no-store'});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Falha ao consultar pagamento');
+    const status = String(data.status || '').toUpperCase();
+    if (status === 'PAID') {
+      clearInterval(statusTimer); statusTimer = null;
+      pixStatus.textContent = '✓ Pagamento aprovado';
+      pixMessage.textContent = 'Pagamento confirmado pela SkalePayments.';
+      payButton.textContent = 'PAGAMENTO APROVADO';
+      payButton.disabled = true;
+    } else if (['REFUSED','CANCELLED','REFUNDED'].includes(status)) {
+      clearInterval(statusTimer); statusTimer = null;
+      pixStatus.textContent = 'Transação ' + status.toLowerCase();
+      pixMessage.textContent = 'Essa cobrança não está mais disponível. Contate o suporte antes de tentar novamente.';
+    } else {
+      pixStatus.textContent = 'Aguardando pagamento Pix';
+    }
+  } catch (error) { pixMessage.textContent = 'Não foi possível consultar o status agora. Tente novamente em instantes.'; }
+}
+payButton.addEventListener('click', async () => {
+  if (activeTransaction) { pixResult.hidden = false; return; }
+  const personalForm = document.getElementById('form1');
+  const addressForm = document.getElementById('form2');
+  if (!personalForm.reportValidity() || !validCPF(document.getElementById('cpf').value)) {
+    openStep(1); alert('Revise os dados pessoais e o CPF.'); return;
+  }
+  if (!addressForm.reportValidity() || digits(document.getElementById('cep').value).length !== 8) {
+    openStep(2); alert('Revise os dados de entrega.'); return;
+  }
+  const payload = {
+    plan, qty, shipping: pick('shipping'), upgrade: pick('upgrade'),
+    customer: {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      cpf: document.getElementById('cpf').value.trim()
+    }, address: readAddress()
+  };
+  payButton.disabled = true; payButton.textContent = 'GERANDO PIX...';
+  pixMessage.textContent = 'Solicitando cobrança segura...';
+  try {
+    const response = await fetch('/api/create-pix', {
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+    });
+    const data = await response.json();
+    if (!response.ok || !data.success || !data.id || !data.pix?.qrcode) {
+      throw new Error(data.error || 'Não foi possível gerar a cobrança Pix.');
+    }
+    activeTransaction = data.id;
+    pixResult.hidden = false;
+    pixCode.value = data.pix.qrcode;
+    pixValue.textContent = 'Valor: ' + money(data.amount);
+    if (data.pix.qrcodeImage) {
+      pixQrImage.src = data.pix.qrcodeImage;
+      pixQrImage.hidden = false;
+    }
+    pixStatus.textContent = 'Aguardando pagamento Pix';
+    pixMessage.textContent = 'Pix gerado. Escaneie o QR Code ou copie o código.';
+    payButton.textContent = 'PIX GERADO';
+    await checkPixStatus();
+    statusTimer = setInterval(checkPixStatus, 10000);
+  } catch (error) {
+    pixMessage.textContent = error.message || 'Erro ao gerar Pix.';
+    payButton.disabled = false;
+    payButton.textContent = '🔒 FINALIZAR PEDIDO';
+  }
+});
+document.getElementById('copyPix').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(pixCode.value); alert('Código Pix copiado!'); }
+  catch { pixCode.select(); alert('Selecione e copie o código Pix.'); }
+});
+
 </script>
 
 </body>

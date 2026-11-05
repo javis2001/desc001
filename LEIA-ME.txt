@@ -1,0 +1,14 @@
+INTEGRAÇÃO PIX — DEVEU PERDEU
+
+Arquivos para a raiz do repositório GitHub: checkout.html, package.json, vercel.json e pasta api/.
+NÃO substitua a página de vendas/index.html.
+Configure SKALE_API_KEY somente em Vercel > Settings > Environments > Production > Environment Variables.
+Depois de enviar os arquivos, faça novo deploy.
+
+IMPORTANTE ANTES DE COBRAR CLIENTES:
+1. Faça teste controlado de cobrança e verifique o status PAID via GET.
+2. Confirme na documentação o formato real da resposta GET /transactions/:id (este código usa status ou transaction.status).
+3. Verifique disponibilidade real de fretes e promessas dos upgrades; remova opções não oferecidas.
+4. Configure persistência de pedidos e webhook autenticado para conciliação definitiva; polling no navegador não substitui gestão de pedidos.
+5. Evite múltiplas cobranças em abas/reloads; implemente idempotência/persistência para produção.
+6. Não publique a API key no HTML, repositório, print ou chat.
