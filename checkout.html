@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finalizar pedido | Deveu Perdeu</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f5f6f8;
+      color: #20252b;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #151b27;
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 0; color: #d3d8e0; }
+    main {
+      max-width: 780px;
+      margin: 25px auto;
+      padding: 0 15px 40px;
+    }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 16px #0000000c;
+    }
+    h2 { font-size: 20px; margin-top: 0; }
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd1d8;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+    .total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #ddd;
+      padding-top: 18px;
+      margin-top: 18px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .free { color: #188447; font-weight: bold; }
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 17px;
+      font-size: 17px;
+      font-weight: bold;
+      background: #cbd1d8;
+      color: #4b5563;
+      cursor: not-allowed;
+    }
+    .notice {
+      background: #fff6df;
+      border: 1px solid #f0d58d;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+    .muted { color: #68717c; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Deveu Perdeu</h1>
+    <p>Finalização do pedido</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1. Escolha seu pedido</h2>
+
+      <label for="plan">Categoria</label>
+      <select id="plan">
+        <option value="bronze">Bronze</option>
+        <option value="prata">Prata</option>
+        <option value="ouro">Ouro</option>
+      </select>
+
+      <label for="quantity">Quantidade</label>
+      <select id="quantity">
+        <option value="1">1 caixa</option>
+        <option value="2">2 caixas</option>
+        <option value="3">3 caixas</option>
+      </select>
+
+      <p>Frete: <span class="free">GRÁTIS</span></p>
+
+      <div class="total">
+        <span>Total</span>
+        <span id="total">R$ 49,70</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Seus dados</h2>
+
+      <label for="name">Nome completo</label>
+      <input id="name" autocomplete="name"
+             placeholder="Seu nome completo">
+
+      <label for="email">E-mail</label>
+      <input id="email" type="email"
+             autocomplete="email"
+             placeholder="seuemail@exemplo.com">
+
+      <label for="phone">Celular com DDD</label>
+      <input id="phone" type="tel"
+             autocomplete="tel"
+             placeholder="(11) 99999-9999">
+
+      <label for="cpf">CPF</label>
+      <input id="cpf" inputmode="numeric"
+             placeholder="000.000.000-00">
+    </section>
+
+    <section class="card">
+      <h2>3. Endereço de entrega</h2>
+
+      <label for="cep">CEP</label>
+      <input id="cep" inputmode="numeric"
+             autocomplete="postal-code"
+             placeholder="00000-000">
+
+      <label for="street">Rua / Avenida</label>
+      <input id="street"
+             autocomplete="address-line1">
+
+      <label for="number">Número</label>
+      <input id="number" placeholder="Número">
+
+      <label for="complement">Complemento</label>
+      <input id="complement"
+             placeholder="Apartamento, bloco etc.">
+
+      <label for="district">Bairro</label>
+      <input id="district">
+
+      <label for="city">Cidade</label>
+      <input id="city"
+             autocomplete="address-level2">
+
+      <label for="state">Estado (UF)</label>
+      <input id="state" maxlength="2"
+             autocomplete="address-level1"
+             placeholder="PA">
+    </section>
+
+    <section class="card">
+      <h2>4. Pagamento</h2>
+      <p>Forma de pagamento: <strong>Pix</strong></p>
+
+      <button type="button" disabled
+              id="payButton">
+        Pagamento em configuração
+      </button>
+
+      <div class="notice">
+        O pagamento Pix será habilitado depois
+        da integração e dos testes com a
+        SkalePayments. Nenhuma cobrança será
+        realizada nesta versão.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const prices = {
+      bronze: { 1: 4970, 2: 6461, 3: 8201 },
+      prata:  { 1: 7990, 2: 10387, 3: 13184 },
+      ouro:   { 1: 9990, 2: 12987, 3: 16484 }
+    };
+
+    const plan = document.getElementById("plan");
+    const quantity = document.getElementById("quantity");
+    const total = document.getElementById("total");
+
+    function updateTotal() {
+      const cents = prices[plan.value][quantity.value];
+
+      total.textContent = (cents / 100)
+        .toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL"
+        });
+    }
+
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const selectedPlan = params.get("plano") ||
+                         params.get("plan");
+
+    const selectedQuantity = params.get("quantidade") ||
+                             params.get("quantity");
+
+    if (Object.hasOwn(prices, selectedPlan)) {
+      plan.value = selectedPlan;
+    }
+
+    if (["1", "2", "3"].includes(selectedQuantity)) {
+      quantity.value = selectedQuantity;
+    }
+
+    plan.addEventListener("change", updateTotal);
+    quantity.addEventListener("change", updateTotal);
+
+    updateTotal();
+  </script>
+</body>
+</html>
