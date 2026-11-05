@@ -1,0 +1,1 @@
+Atualização: arte hero-deveu.webp pulsando somente no interior do popup. Roleta com 10 setores e parada calculada para coincidir com o prêmio mostrado. Resultado demonstrativo; sem integração com concessão de prêmios reais.

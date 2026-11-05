@@ -40,3 +40,19 @@
 .bn-ref-modal:not(.bn-ref-intro) .bn-ref-disclaimer{font-size:11px!important;margin:10px 0 0!important}
 @media(max-width:480px){.bn-ref-modal{padding:17px 12px}.bn-ref-wheel-wrap{width:min(94%,350px)}.bn-ref-intro .bn-ref-close{top:2%;right:4%}}
 @media(prefers-reduced-motion:reduce){.bn-ref-intro,.bn-ref-art-button{animation:none!important}}
+
+/* Ajuste exclusivo do popup, preservando o restante do site */
+.bn-ref-modal.bn-ref-intro{width:min(580px,96vw);max-height:95dvh;overflow-y:auto;overflow-x:hidden;padding:25px 25px 28px;border:3px solid #ff7900;border-radius:28px;background:radial-gradient(ellipse at 50% 8%,#4b2008 0%,#1c0b02 52%,#000 100%);box-shadow:0 0 40px #ff730055;animation:none}
+.bn-ref-intro .bn-ref-stage{display:flex;flex-direction:column;align-items:center;line-height:normal}
+.bn-ref-intro-pill{display:inline-block;border:2px solid #ff7800;border-radius:40px;padding:6px 23px;background:#050505;color:#fff;font-size:14px;font-weight:900;letter-spacing:.11em;margin:7px auto 8px}
+.bn-ref-hero{display:block;width:min(96%,430px);max-height:36dvh;object-fit:contain;margin:0 auto;transform-origin:center;animation:bn-hero-pulse 1.7s ease-in-out infinite;filter:drop-shadow(0 0 12px #ff740055)}
+.bn-ref-black-label{background:#080808;color:white;font-weight:900;font-size:13px;letter-spacing:.08em;border-left:5px solid #ff7900;padding:6px 14px;margin:-5px auto 8px;z-index:1}
+.bn-ref-modal.bn-ref-intro .bn-ref-intro-title{font-size:clamp(34px,7vw,51px);line-height:.99;margin:7px 0 10px;font-weight:950;color:#fff}
+.bn-ref-modal.bn-ref-intro .bn-ref-intro-title em{color:#ff7900;font-style:normal}
+.bn-ref-modal.bn-ref-intro .bn-ref-intro-description{font-size:clamp(13px,2.6vw,18px);line-height:1.35;margin:5px 0 20px;color:#eee}
+.bn-ref-modal.bn-ref-intro .bn-ref-action{font-size:clamp(16px,3vw,22px);padding:17px 10px;border-radius:16px;background:#ff7900;box-shadow:0 0 20px #ff790055}
+.bn-ref-wheel-svg.bn-ref-spinning{animation:bn-wheel-target 4.1s cubic-bezier(.1,.72,.14,1) forwards}
+@keyframes bn-wheel-target{from{transform:rotate(0deg)}to{transform:rotate(var(--bn-rotation))}}
+@keyframes bn-hero-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
+@media(max-width:480px){.bn-ref-modal.bn-ref-intro{padding:17px 13px 20px}.bn-ref-hero{max-height:33dvh}.bn-ref-intro-pill{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.bn-ref-hero{animation:none}}
