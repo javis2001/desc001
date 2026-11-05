@@ -386,8 +386,184 @@ footer{
         <option value="">Selecione o estado</option>
       </select>
 
-      <label>Escolha o frete</label>
-      <div class="shipping">
+     
+<label>Escolha o frete:</label>
+
+<div id="shippingOptions">
+  <label class="shipping">
+    <input type="radio" name="shipping"
+           value="gratis" checked>
+    <div>
+      <strong>🎁 Frete Grátis</strong>
+      <small>4 a 7 dias úteis</small>
+    </div>
+    <span class="green">Grátis</span>
+  </label>
+
+  <label class="shipping">
+    <input type="radio" name="shipping"
+           value="jadlog">
+    <div>
+      <strong>🚚 JadLog</strong>
+      <small>3 a 5 dias úteis</small>
+    </div>
+    <strong>R$ 9,90</strong>
+  </label>
+
+  <label class="shipping">
+    <input type="radio" name="shipping"
+           value="retirada">
+    <div>
+      <strong>📍 Retirada no Shopping Iguatemi</strong>
+      <small>Retire no mesmo dia, mediante confirmação</small>
+    </div>
+    <span class="green">Grátis</span>
+  </label>
+
+  <label class="shipping">
+    <input type="radio" name="shipping"
+           value="full">
+    <div>
+      <strong>⚡ Full 24hrs</strong>
+      <small>Entrega em até 24 horas</small>
+    </div>
+    <strong>R$ 19,90</strong>
+  </label>
+</div>
+```
+
+As quatro opções terão o mesmo estilo de seleção do checkout original. **Os prazos e a retirada são os da referência; só mantenha essas modalidades ativas se você realmente conseguir oferecê-las ao cliente.**
+
+## 2. Adicionar os upgrades no pagamento
+
+Na etapa 3, localize o fechamento da caixa verde do Pix:
+
+```html
+</div>
+```
+
+Imediatamente depois da `<div class="pix-option">`, cole:
+
+<CodeBlock language="html" editable>
+<div class="upgrade-box">
+  <strong class="upgrade-title">
+    🔥 APROVEITE! ADICIONE UM UPGRADE AO SEU PEDIDO:
+  </strong>
+
+  <label class="upgrade-option">
+    <input type="radio" name="upgrade" value="premium">
+    <div>
+      <strong>Upgrade Premium</strong>
+      <small>Produtos premium garantidos na caixa</small>
+    </div>
+    <span class="orange">+ R$ 19,90</span>
+  </label>
+
+  <label class="upgrade-option">
+    <input type="radio" name="upgrade" value="dobro">
+    <div>
+      <strong>Caixa em Dobro</strong>
+      <small>Receba o dobro de produtos na caixa</small>
+    </div>
+    <span class="orange">+ R$ 25,90</span>
+  </label>
+
+  <label class="upgrade-option">
+    <input type="radio" name="upgrade" value="iphone">
+    <div>
+      <strong>Um iPhone Garantido</strong>
+      <small>Adicional sujeito à oferta anunciada</small>
+    </div>
+    <span class="orange">+ R$ 79,00</span>
+  </label>
+
+  <label class="upgrade-option">
+    <input type="radio" name="upgrade" value="nenhum" checked>
+    <div>
+      <strong>Não quero nenhum upgrade</strong>
+    </div>
+  </label>
+</div>
+```
+
+O cliente poderá escolher apenas um upgrade por pedido. Nenhum adicional será selecionado automaticamente.
+
+## 3. Adicionar o estilo das novas opções
+
+Dentro do `<style>`, antes de `</style>`, cole:
+
+<CodeBlock language="css" editable>
+.shipping,
+.upgrade-option {
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+
+.shipping:has(input:checked),
+.upgrade-option:has(input:checked) {
+  border-color: #ff6b00;
+  background: #fff5ed;
+}
+
+.shipping input,
+.upgrade-option input {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.upgrade-box {
+  border: 1px dashed #ff8a39;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 12px;
+  background: #fffaf6;
+}
+
+.upgrade-title {
+  display: block;
+  font-size: 10px;
+  color: #ff6b00;
+  margin-bottom: 10px;
+}
+
+.upgrade-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #e8e8e8;
+  border-radius: 9px;
+  padding: 12px 8px;
+  margin: 7px 0;
+  background: white;
+}
+
+.upgrade-option input {
+  width: 16px;
+  height: 16px;
+  accent-color: #ff6b00;
+}
+
+.upgrade-option div {
+  flex: 1;
+  min-width: 0;
+}
+
+.upgrade-option strong {
+  font-size: 11px;
+}
+
+.upgrade-option small {
+  display: block;
+  color: #777;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.upgrade-option .orange {
+  white-space: nowrap;
+  font-size: 10px;
+}
+
         <input type="radio" checked name="shipping">
         <div>
           <strong>Frete Grátis</strong>
