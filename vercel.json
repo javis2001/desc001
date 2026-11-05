@@ -1,1 +1,9 @@
 
+{
+  "rewrites": [
+    {
+      "source": "/checkout",
+      "destination": "/checkout.html"
+    }
+  ]
+}
