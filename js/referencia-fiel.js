@@ -9,21 +9,35 @@ wrapper.addEventListener('click',e=>{const b=e.target.closest('.qty-ref-option')
 function setupMedia(){const video=document.getElementById('vid'),play=document.getElementById('play');if(video){video.controls=true;video.playsInline=true;video.preload='metadata';const update=()=>{if(play)play.style.display=video.paused?'':'none'};play?.addEventListener('click',async e=>{e.preventDefault();try{await video.play()}catch(err){console.warn('Vídeo não iniciou',err)}});['play','pause','ended'].forEach(ev=>video.addEventListener(ev,update));update();}const track=document.getElementById('track'),prev=document.getElementById('prev'),next=document.getElementById('next');if(track){const advance=dir=>{const slide=track.querySelector('.slide');if(!slide)return;const step=slide.getBoundingClientRect().width+12;const max=track.scrollWidth-track.clientWidth;let pos=track.scrollLeft+dir*step;if(pos>max+5)pos=0;if(pos<0)pos=max;track.scrollTo({left:pos,behavior:'smooth'})};prev?.addEventListener('click',()=>advance(-1));next?.addEventListener('click',()=>advance(1));}}
 function popup(){
  if(sessionStorage.getItem('bn-ref-seen'))return;
- const prizes=['Xiaomi Redmi Note','Fone Bluetooth','Smartwatch','Caixa surpresa','JBL Bluetooth','Cupom especial','Air Fryer','Brinde surpresa'];
+ const prizes=[['Smartphones','📱'],['Apple','🎧'],['JBL','🎵'],['Xiaomi','⌚'],['Stanley','🥤'],['Lakrata','✨'],['Arham','✨'],['Armaf','✨'],['Smartwatches','⌚'],['Games e TV','🎮']];
+ const colors=['#ff7300','#141416','#ffd17a','#fff2d9','#ff7300','#141416','#ffd17a','#fff2d9','#ff7300','#141416'];
  const overlay=document.createElement('div');overlay.className='bn-ref-backdrop';
- overlay.innerHTML=`<section class="bn-ref-modal" role="dialog" aria-modal="true" aria-label="Black November"><button class="bn-ref-close" type="button" aria-label="Fechar">×</button><div class="bn-ref-stage"></div></section>`;
+ overlay.innerHTML='<section class="bn-ref-modal" role="dialog" aria-modal="true" aria-label="Black November"><button class="bn-ref-close" type="button" aria-label="Fechar">×</button><div class="bn-ref-stage"></div></section>';
  const stage=overlay.querySelector('.bn-ref-stage');
- const close=()=>{overlay.remove();sessionStorage.setItem('bn-ref-seen','1')};
+ const close=()=>{overlay.remove();sessionStorage.setItem('bn-ref-seen','1');document.removeEventListener('keydown',escape)};
+ const escape=e=>{if(e.key==='Escape')close()};document.addEventListener('keydown',escape);
  const action=(text,key)=>`<button class="bn-ref-action" type="button" data-action="${key}">${text}</button>`;
- const wheel=()=>`<div class="bn-ref-wheel-wrap"><div class="bn-ref-pointer"></div><div class="bn-ref-wheel">${prizes.map((name,i)=>`<span class="bn-ref-prize" style="--i:${i}"><span>${name}</span></span>`).join('')}<div class="bn-ref-center">BLACK<br>NOVEMBER</div></div></div>`;
- const intro=()=>{stage.innerHTML=`<span class="bn-ref-pill">🔥 EXCLUSIVO</span><img class="bn-ref-image" src="images/popup-black-november.jpg" alt="Caixas surpresa Black November"><h2>BLACK<br><em>NOVEMBER</em></h2><p>Caixas surpresa com até 70% OFF e frete grátis. Oferta especial Black November!</p>${action('Aproveitar Black November','start')}`};
- const spin=()=>{stage.innerHTML=`<span class="bn-ref-pill">🔥 GIRAR E GANHAR</span><h2>Promoção <em>Black November</em> — Girou Ganhou!</h2><p>Conheça os prêmios da roleta e descubra o resultado do sorteio.</p>${wheel()}${action('Girar roleta','spin')}<p class="bn-ref-disclaimer">Prêmios exibidos como demonstração. A entrega depende das regras e da validação da promoção.</p>`};
- const result=()=>{const chosen=prizes[0];stage.innerHTML=`<h2>Resultado do <em>sorteio</em></h2>${wheel()}<p class="bn-ref-result-title">✓ Resultado da roleta</p><h3 class="bn-ref-winner">${chosen}</h3><p>Resultado ilustrativo. Nenhum prêmio está garantido sem validação da promoção.</p>${action('Escolher minhas caixas','go')}`};
+ const wheel=()=>{
+  let paths='', labels='';const cx=200,cy=200,r=188;
+  prizes.forEach(([name,emoji],i)=>{
+   const start=(-90+i*36)*Math.PI/180,end=(-90+(i+1)*36)*Math.PI/180;
+   const x1=cx+r*Math.cos(start),y1=cy+r*Math.sin(start),x2=cx+r*Math.cos(end),y2=cy+r*Math.sin(end);
+   paths+=`<path d="M200 200 L${x1.toFixed(2)} ${y1.toFixed(2)} A188 188 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)} Z" fill="${colors[i]}" stroke="#ffa733" stroke-width=".7"/>`;
+   const mid=-90+(i+.5)*36;const rad=mid*Math.PI/180;
+   const x=cx+125*Math.cos(rad),y=cy+125*Math.sin(rad);
+   const rotation=mid+90;const ink=[1,5,9].includes(i)?'#fff':'#161416';
+   labels+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rotation})"><text x="0" y="-12" text-anchor="middle" font-size="23">${emoji}</text><text x="0" y="13" fill="${ink}" text-anchor="middle" font-size="11" font-weight="800">${name}</text></g>`;
+  });
+  return `<div class="bn-ref-wheel-wrap"><div class="bn-ref-pointer"></div><svg class="bn-ref-wheel-svg" viewBox="0 0 400 400" role="img" aria-label="Roleta de prêmios: ${prizes.map(x=>x[0]).join(', ')}"><circle cx="200" cy="200" r="197" fill="#ffbb61"/><circle cx="200" cy="200" r="191" fill="#141416"/>${paths}${labels}<circle cx="200" cy="200" r="50" fill="#141416" stroke="#ffb35a" stroke-width="6"/><text x="200" y="194" fill="white" text-anchor="middle" font-weight="900" font-size="19">BLACK</text><text x="200" y="217" fill="#ff7800" text-anchor="middle" font-weight="900" font-size="17">NOVEMBER</text></svg></div>`;
+ };
+ const intro=()=>{overlay.querySelector('.bn-ref-modal').classList.add('bn-ref-intro');stage.innerHTML=`<img class="bn-ref-fullart" src="images/popup-black-november.jpg" alt="Black November: caixas surpresa com até 70% OFF e frete grátis"><button type="button" class="bn-ref-art-button" data-action="start" aria-label="Aproveitar Black November"></button>`;};
+ const spin=()=>{overlay.querySelector('.bn-ref-modal').classList.remove('bn-ref-intro');stage.innerHTML=`<span class="bn-ref-pill">🟠 GIROU, GANHOU</span><h2>Promoção <em>Black November</em>, Girou Ganhou!</h2><p>Eletrônicos, perfumes árabes, garrafas Stanley, fones JBL e Xiaomi e smartwatches de várias marcas. Confira as condições da promoção antes de participar.</p>${wheel()}${action('Girar a roleta','spin')}<p class="bn-ref-disclaimer">Demonstração visual: a roleta não concede nem garante prêmios.</p>`;};
+ const result=()=>{stage.innerHTML=`<span class="bn-ref-pill">🟠 GIROU, GANHOU</span><h2>Resultado da <em>roleta</em></h2>${wheel()}<p>Esta roleta é uma demonstração visual e não representa uma premiação real.</p>${action('Ver caixas disponíveis','go')}`;};
  overlay.querySelector('.bn-ref-close').addEventListener('click',close);
  overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
  stage.addEventListener('click',e=>{const key=e.target.closest('[data-action]')?.dataset.action;
   if(key==='start')spin();
-  if(key==='spin'){const btn=stage.querySelector('[data-action="spin"]');if(btn.disabled)return;btn.disabled=true;btn.textContent='Sorteando seu prêmio...';stage.querySelector('.bn-ref-wheel').classList.add('bn-ref-spinning');setTimeout(result,4200)}
+  if(key==='spin'){const btn=stage.querySelector('[data-action="spin"]');if(btn.disabled)return;btn.disabled=true;btn.textContent='Girando...';stage.querySelector('.bn-ref-wheel-svg').classList.add('bn-ref-spinning');setTimeout(()=>{if(overlay.isConnected)result()},4200)}
   if(key==='go'){close();document.getElementById('planos')?.scrollIntoView({behavior:'smooth'})}
  });
  document.body.appendChild(overlay);intro();
